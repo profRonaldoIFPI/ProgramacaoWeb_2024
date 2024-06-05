@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tarefas</title>
+        <link rel="stylesheet" href="/styles.css">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">   
+</head>
+<body>
+    <h1>Lista de Tarefas</h1>
+    <table class="striped">
+        <thead>
+            <tr>
+                <th>Tarefa</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% tasks.forEach(task => { %>
+                <tr>
+                    <td class="<%= task.completed ? 'completed' : '' %>"><%= task.title %></td>
+                    <td><%= task.completed ? 'Concluída' : 'Pendente' %></td>
+                    <td class="action-buttons">
+                        <% if (!task.completed) { %>
+                            <form action="/tasks/<%= task.id %>/complete" method="POST">
+                                <button type="submit" class="waves-effect waves-light btn-small " >Concluir</button>
+                            </form>
+                        <% } %>
+                        <% if (task.completed) { %>
+                            <form action="/tasks/<%= task.id %>/delete" method="POST">
+                                <button type="submit" class="waves-effect waves-light btn-small #ff8a80 red accent-1">Remover</button>
+                            </form>
+                        <% } %>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    <a href="/tasks/new" class="waves-effect waves-light btn">Adicionar Nova Tarefa</a>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
