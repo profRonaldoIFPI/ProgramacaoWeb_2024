@@ -9,7 +9,37 @@
 </head>
 <body>
     <h2>To Do List</h2>
-    <p> <% tasks %> </p>
+    <table class="striped">
+        <thead>
+            <tr>
+                <th>Tarefa</th>
+                <th>Status</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% tasks.forEach( (task) => { %>
+            <tr>
+                <td><%= task.title %></td>
+                <td><%= task.completed ? "Feito" : "Por fazer" %></td>
+                <td>
+                    <% if(!task.completed){ %>
+                        <form action="/tasks/<%= task.id %>/complete" method="POST">
+                            <button type="submit" class="waves-effect waves-light btn-small">Concluir</button>
+                        </form>
+                    <% }; %>
+                    <% if(task.completed){ %> 
+                        <form action="/tasks/<%= task.id %>/delete" method="POST">
+                            <button type="submit" class="waves-effect waves-light btn-small">Excluir</button>
+                        </form>
+                    <% }; %>
+                </td>
+            </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    <a class="waves-effect waves-light btn" href="/tasks/new">Adicionar tarefa</a>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 </html>
+

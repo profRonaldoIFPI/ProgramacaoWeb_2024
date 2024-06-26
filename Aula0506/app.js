@@ -4,10 +4,13 @@ const { stringify } = require('querystring');
 const PORT = 3000;
 const app = express();
 app.set('view engine', 'ejs')
+
 //linha de baixo permite usar o método POST
 app.use(express.urlencoded({extended:true}));
+
 //linha de baixo configura o diretório de conteúdos staticos
 app.use(express.static('public'));
+
 function loadFile(){
     try{
         const data = fs.readFileSync("tasks.json");    
@@ -17,15 +20,15 @@ function loadFile(){
         return [];
     }
 }
-function seveFile(data){
+function saveFile(data){
     fs.writeFileSync(        // grava um arquivo de forma sincrona
         'tasks.json',        
         JSON.stringify(data) // converte JSON para string
     );
 }
 app.get('/tasks', (req,res)=>{
-    let tarefas = loadFile();
-    console.log(tarefas);
+    const tarefas = loadFile();
+    // console.log(tarefas);
     res.render('index', {
         tasks: tarefas
     });
@@ -43,19 +46,28 @@ app.post('/tasks',(req,res)=>{
         completed: false 
     }
     tasks.push(newTask);
-    seveFile(tasks); 
+    saveFile(tasks); 
+    res.redirect('/tasks')
 });
 
 app.post('/tasks/:id/complete',(req,res)=>{
-    // carregar arquivo
-    // buscar por id
-    // salvas o arquivo
+    const tasks = loadFile();
+    const id = req.params.id;
+    const task = tasks.find(task => task.id === id);
+    if (task){
+        task.completed = true;
+        saveFile(tasks);
+    }
+    res.redirect('/tasks');
 });
 
 app.post('/tasks/:id/delete',(req,res)=>{
-    // carregar arquivo
-    // buscar por id
-    // salvas o arquivo
+    let tasks = loadFile();
+    const id = req.params.id;
+    console.log(id);
+    tasks = tasks.filter(task => task.id !== id);
+    saveFile(tasks);
+    res.redirect('/tasks');
 });
 
 app.listen(PORT,(err)=>{
